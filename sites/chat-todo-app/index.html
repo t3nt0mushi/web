@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat Todo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --panel: rgba(255, 255, 255, 0.82);
+      --panel-strong: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --line: #d8e0ea;
+      --accent: #5b7cfa;
+      --accent-2: #7c3aed;
+      --success: #12b76a;
+      --danger: #ef4444;
+      --shadow: 0 18px 40px rgba(17, 24, 39, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 999px;
+      --composer-h: 88px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(91, 124, 250, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(124, 58, 237, 0.10), transparent 22%),
+        var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .app {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 20px 16px 14px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .titleblock h1 {
+      margin: 0;
+      font-size: clamp(1.1rem, 1rem + 1vw, 1.6rem);
+      line-height: 1.2;
+    }
+
+    .titleblock p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chipbtn, .iconbtn, .filterbtn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+    }
+
+    .filterbtn[aria-pressed="true"] {
+      background: rgba(91, 124, 250, 0.12);
+      border-color: rgba(91, 124, 250, 0.35);
+      color: #2740aa;
+      font-weight: 600;
+    }
+
+    .chipbtn:hover, .iconbtn:hover, .filterbtn:hover { transform: translateY(-1px); }
+    .chipbtn:focus-visible, .iconbtn:focus-visible, .filterbtn:focus-visible,
+    .composer input:focus-visible, .composer textarea:focus-visible {
+      outline: 3px solid rgba(91, 124, 250, 0.35);
+      outline-offset: 2px;
+    }
+
+    main {
+      min-height: 0;
+      padding: 0 16px 12px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+
+    .summaryrow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      padding: 0 4px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .thread {
+      min-height: 0;
+      overflow: auto;
+      padding: 8px 2px 18px;
+      scrollbar-gutter: stable;
+    }
+
+    .thread ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .message.self { justify-content: flex-end; }
+
+    .bubble {
+      width: min(100%, 680px);
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 22px 22px 22px 8px;
+      box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+      padding: 14px 14px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .message.self .bubble {
+      border-radius: 22px 22px 8px 22px;
+      background: linear-gradient(180deg, rgba(91,124,250,0.13), rgba(91,124,250,0.08)), var(--panel-strong);
+      border-color: rgba(91, 124, 250, 0.18);
+    }
+
+    .message.completed .bubble {
+      opacity: 0.72;
+    }
+
+    .bubble-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tasktext {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .tasktext.done {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .meta span {
+      display: inline-flex;
+      align-items: center;
+      border-radius: var(--radius-sm);
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .prio-high { background: rgba(239, 68, 68, 0.12); color: #b42318; border-color: rgba(239, 68, 68, 0.2); }
+    .prio-medium { background: rgba(245, 158, 11, 0.14); color: #92400e; border-color: rgba(245, 158, 11, 0.22); }
+    .prio-low { background: rgba(16, 185, 129, 0.12); color: #047857; border-color: rgba(16, 185, 129, 0.22); }
+    .prio-normal { background: rgba(102, 112, 133, 0.10); color: #475467; border-color: rgba(102, 112, 133, 0.16); }
+    .tag { background: rgba(91, 124, 250, 0.11); color: #2740aa; border-color: rgba(91, 124, 250, 0.18); }
+    .due { background: rgba(124, 58, 237, 0.11); color: #6b21a8; border-color: rgba(124, 58, 237, 0.18); }
+
+    .bubble-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .actionbtn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .actionbtn.complete { border-color: rgba(18, 183, 106, 0.28); }
+    .actionbtn.delete { border-color: rgba(239, 68, 68, 0.25); color: #b42318; }
+    .actionbtn[aria-pressed="true"] { background: rgba(18, 183, 106, 0.10); }
+
+    .timestamp {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    .empty {
+      margin: 28px auto 0;
+      padding: 28px 18px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,0.55);
+      max-width: 560px;
+    }
+
+    .composer-wrap {
+      position: sticky;
+      bottom: 0;
+      padding: 12px 16px 16px;
+      background: linear-gradient(180deg, rgba(244,247,251,0.1), rgba(244,247,251,0.95) 20%, rgba(244,247,251,1));
+      border-top: 1px solid rgba(216, 224, 234, 0.7);
+    }
+
+    .hint {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .composer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      border-radius: 22px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .composer label { position: absolute; left: -9999px; }
+
+    .composer textarea {
+      width: 100%;
+      resize: none;
+      min-height: 46px;
+      max-height: 140px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      padding: 12px 12px;
+      outline: none;
+    }
+
+    .composer .send {
+      align-self: stretch;
+      min-width: 96px;
+      border: 0;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      font-weight: 700;
+      padding: 0 18px;
+      cursor: pointer;
+    }
+
+    .composer .send:disabled, .actionbtn:disabled, .chipbtn:disabled, .filterbtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 720px) {
+      header, main, .composer-wrap { padding-left: 10px; padding-right: 10px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .toolbar { width: 100%; justify-content: flex-start; }
+      .summaryrow { flex-direction: column; align-items: flex-start; }
+      .composer { grid-template-columns: 1fr; }
+      .composer .send { min-height: 46px; }
+      .bubble { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="topbar">
+        <div class="titleblock">
+          <h1>Chat Todo</h1>
+          <p>Turn quick messages into clean tasks with tags, priority, and due dates.</p>
+        </div>
+        <div class="toolbar" aria-label="Controls">
+          <button class="chipbtn" id="clearCompleted" type="button">Clear completed</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="summaryrow">
+        <div class="filters" role="tablist" aria-label="Todo filters">
+          <button class="filterbtn" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="filterbtn" type="button" data-filter="active" aria-pressed="false">Active</button>
+          <button class="filterbtn" type="button" data-filter="completed" aria-pressed="false">Completed</button>
+        </div>
+        <div id="count" aria-live="polite">0 items</div>
+      </div>
+
+      <section class="thread" aria-label="Todo conversation">
+        <ul id="list"></ul>
+        <div id="empty" class="empty" hidden>
+          <strong>No todos yet.</strong>
+          <div>Send your first task from the composer below.</div>
+        </div>
+      </section>
+    </main>
+
+    <div class="composer-wrap">
+      <p class="hint">Try: <strong>Finish report #work !high due:2026-09-30</strong> or <strong>Buy milk #home due:tomorrow</strong></p>
+      <div class="composer" role="group" aria-label="Add a todo">
+        <label for="composerInput">New todo</label>
+        <textarea id="composerInput" rows="1" placeholder="Type a task and press Enter…"></textarea>
+        <button class="send" id="addBtn" type="button">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'chat-todo-items-v1';
+      const listEl = document.getElementById('list');
+      const emptyEl = document.getElementById('empty');
+      const countEl = document.getElementById('count');
+      const inputEl = document.getElementById('composerInput');
+      const addBtn = document.getElementById('addBtn');
+      const clearCompletedBtn = document.getElementById('clearCompleted');
+      const filterBtns = Array.from(document.querySelectorAll('.filterbtn'));
+      let filter = 'all';
+      let items = load();
+
+      function load() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+      }
+
+      function save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      }
+
+      function formatDate(date) {
+        return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(date));
+      }
+
+      function normalizeDue(value) {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        if (value === 'today') return today.toISOString().slice(0,10);
+        if (value === 'tomorrow') {
+          const t = new Date(today);
+          t.setDate(t.getDate() + 1);
+          return t.toISOString().slice(0,10);
+        }
+        return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
+      }
+
+      function parseTodo(text) {
+        const raw = text.trim();
+        const tags = [];
+        let priority = 'normal';
+        let due = '';
+        let clean = raw;
+
+        const dueMatch = clean.match(/\bdue:(today|tomorrow|\d{4}-\d{2}-\d{2})\b/i);
+        if (dueMatch) {
+          due = normalizeDue(dueMatch[1].toLowerCase()) || '';
+          clean = clean.replace(dueMatch[0], ' ');
+        }
+
+        clean = clean.replace(/!(high|medium|low)\b/ig, (_, p1) => {
+          priority = p1.toLowerCase();
+          return ' ';
+        });
+
+        clean = clean.replace(/#([\w-]+)/g, (_, tag) => {
+          tags.push(tag.toLowerCase());
+          return ' ';
+        });
+
+        clean = clean.replace(/\s+/g, ' ').trim();
+        return { title: clean, priority, tags, due };
+      }
+
+      function addTodo() {
+        const parsed = parseTodo(inputEl.value);
+        if (!parsed.title) return;
+        items.push({
+          id: String(Date.now()) + Math.random().toString(16).slice(2),
+          title: parsed.title,
+          priority: parsed.priority,
+          tags: parsed.tags,
+          due: parsed.due,
+          completed: false,
+          createdAt: new Date().toISOString()
+        });
+        save();
+        inputEl.value = '';
+        inputEl.style.height = 'auto';
+        render();
+        listEl.lastElementChild?.scrollIntoView({ block: 'end' });
+        inputEl.focus();
+      }
+
+      function matchesFilter(item) {
+        if (filter === 'active') return !item.completed;
+        if (filter === 'completed') return item.completed;
+        return true;
+      }
+
+      function render() {
+        const visible = items.filter(matchesFilter);
+        listEl.innerHTML = '';
+        emptyEl.hidden = !(items.length === 0 || visible.length === 0);
+        countEl.textContent = `${items.length} item${items.length === 1 ? '' : 's'}`;
+        clearCompletedBtn.disabled = !items.some(item => item.completed);
+
+        if (items.length === 0) {
+          emptyEl.innerHTML = '<strong>No todos yet.</strong><div>Send your first task from the composer below.</div>';
+        } else if (visible.length === 0) {
+          emptyEl.hidden = false;
+          emptyEl.innerHTML = '<strong>No matching todos.</strong><div>Try a different filter or add a new task.</div>';
+        }
+
+        visible.forEach(item => {
+          const li = document.createElement('li');
+          li.className = `message self${item.completed ? ' completed' : ''}`;
+          li.innerHTML = `
+            <article class="bubble" aria-label="Todo item">
+              <div class="bubble-top">
+                <div>
+                  <p class="tasktext ${item.completed ? 'done' : ''}">${escapeHtml(item.title)}</p>
+                  <div class="meta"></div>
+                </div>
+              </div>
+              <div class="bubble-actions">
+                <button class="actionbtn complete" type="button" aria-pressed="${item.completed}" data-action="toggle" data-id="${item.id}">${item.completed ? 'Mark active' : 'Mark complete'}</button>
+                <button class="actionbtn delete" type="button" data-action="delete" data-id="${item.id}">Delete</button>
+              </div>
+              <div class="timestamp">${new Date(item.createdAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</div>
+            </article>
+          `;
+          const meta = li.querySelector('.meta');
+          meta.appendChild(chip(item.priority, `prio-${item.priority}`));
+          item.tags.forEach(tag => meta.appendChild(chip(`#${tag}`, 'tag')));
+          if (item.due) meta.appendChild(chip(`Due ${formatDate(item.due)}`, 'due'));
+          listEl.appendChild(li);
+        });
+      }
+
+      function chip(text, cls) {
+        const span = document.createElement('span');
+        span.className = cls;
+        span.textContent = text;
+        return span;
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+      }
+
+      listEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        const idx = items.findIndex(item => item.id === id);
+        if (idx < 0) return;
+        if (btn.dataset.action === 'toggle') items[idx].completed = !items[idx].completed;
+        if (btn.dataset.action === 'delete') items.splice(idx, 1);
+        save();
+        render();
+      });
+
+      addBtn.addEventListener('click', addTodo);
+      inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          addTodo();
+        }
+      });
+      inputEl.addEventListener('input', () => {
+        inputEl.style.height = 'auto';
+        inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+      });
+
+      clearCompletedBtn.addEventListener('click', () => {
+        items = items.filter(item => !item.completed);
+        save();
+        render();
+      });
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filter = btn.dataset.filter;
+          filterBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+          render();
+        });
+      });
+
+      render();
+      inputEl.focus();
+    })();
+  </script>
+</body>
+</html>
