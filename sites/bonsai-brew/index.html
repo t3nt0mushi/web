@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bonsai Brew — Calm Coffee, Crafted with Care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f7f1e7;
+      --bg-2:#efe5d6;
+      --panel:#fffaf3;
+      --panel-2:#f4eadc;
+      --ink:#1f1a16;
+      --muted:#66584d;
+      --green:#24422d;
+      --green-2:#385a41;
+      --gold:#b88a44;
+      --gold-soft:#e8d0a0;
+      --espresso:#4a2f22;
+      --shadow: 0 18px 45px rgba(52, 34, 20, .12);
+      --shadow-soft: 0 10px 24px rgba(52, 34, 20, .08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --container: 1180px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(184,138,68,.13), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(36,66,45,.09), transparent 26%),
+        linear-gradient(180deg, var(--bg) 0%, #f5ecdf 100%);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    a{color:inherit;text-decoration:none}
+    a:focus-visible, button:focus-visible{
+      outline:3px solid rgba(184,138,68,.7);
+      outline-offset:3px;
+    }
+    img{max-width:100%;display:block}
+    .container{width:min(var(--container), calc(100% - 32px)); margin:0 auto}
+    .skip-link{position:absolute;left:-999px;top:12px;background:#fff;padding:10px 14px;border-radius:999px;box-shadow:var(--shadow-soft);z-index:20}
+    .skip-link:focus{left:12px}
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter:saturate(150%) blur(14px);
+      background:rgba(247,241,231,.7);
+      border-bottom:1px solid rgba(74,47,34,.08);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between; gap:18px;
+      min-height:78px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.02em;
+    }
+    .brand-mark{
+      width:42px; height:42px; border-radius:14px;
+      background:linear-gradient(135deg, var(--green) 0%, #1b2f20 100%);
+      position:relative; box-shadow:0 10px 22px rgba(36,66,45,.22);
+    }
+    .brand-mark::before,.brand-mark::after{content:""; position:absolute; border-radius:999px;}
+    .brand-mark::before{width:18px;height:18px;left:10px;top:8px;background:rgba(232,208,160,.9);box-shadow:8px 6px 0 0 rgba(232,208,160,.55), 16px 14px 0 0 rgba(232,208,160,.28)}
+    .brand-mark::after{width:10px;height:18px;left:17px;bottom:6px;background:var(--espresso);border-radius:8px 8px 6px 6px}
+    .brand-name{font-family:"Cormorant Garamond", serif; font-size:1.5rem; line-height:1}
+    nav ul{list-style:none; margin:0; padding:0; display:flex; align-items:center; gap:24px; flex-wrap:wrap}
+    nav a{color:var(--muted); font-weight:600; font-size:.98rem}
+    nav a:hover, nav a:focus-visible{color:var(--green)}
+    .nav-cta{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px; padding:12px 18px; border-radius:999px;
+      background:linear-gradient(135deg, var(--green) 0%, #33523b 100%);
+      color:#fff; box-shadow:0 12px 24px rgba(36,66,45,.2);
+      font-weight:700;
+    }
+    .nav-cta:hover,.nav-cta:focus-visible{transform:translateY(-1px)}
+    .hero{position:relative; overflow:hidden; padding:46px 0 28px}
+    .hero-grid{
+      display:grid; grid-template-columns:1.06fr .94fr; gap:34px; align-items:center; min-height:calc(100svh - 110px);
+    }
+    .eyebrow{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px;
+      background:rgba(255,250,243,.8); border:1px solid rgba(74,47,34,.08); color:var(--green);
+      box-shadow:var(--shadow-soft); font-weight:700; font-size:.9rem;
+    }
+    .eyebrow::before{content:""; width:8px;height:8px;border-radius:50%; background:var(--gold); box-shadow:0 0 0 5px rgba(184,138,68,.14)}
+    h1,h2,h3{margin:0; line-height:1.08}
+    h1{
+      font-family:"Cormorant Garamond", serif;
+      font-size:clamp(3.2rem, 7vw, 6.3rem);
+      letter-spacing:-.03em;
+      margin-top:18px;
+      max-width:11ch;
+    }
+    .hero p{font-size:1.06rem; color:var(--muted); max-width:58ch; margin:20px 0 0}
+    .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-top:28px}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:14px 20px; border-radius:999px; font-weight:700; border:1px solid transparent;
+      transition:transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .btn:hover,.btn:focus-visible{transform:translateY(-2px)}
+    .btn-primary{background:linear-gradient(135deg, var(--gold) 0%, #c89a52 100%); color:#23170f; box-shadow:0 14px 26px rgba(184,138,68,.26)}
+    .btn-secondary{background:rgba(255,250,243,.72); color:var(--green); border-color:rgba(36,66,45,.16)}
+    .hero-note{margin-top:22px; display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:.95rem}
+    .hero-note span{display:inline-flex; align-items:center; gap:8px}
+    .hero-note i{width:8px;height:8px;border-radius:50%; background:var(--green)}
+
+    .visual-card{
+      position:relative; min-height:640px; border-radius:36px; padding:30px; overflow:hidden;
+      background:
+        radial-gradient(circle at 20% 12%, rgba(232,208,160,.78), transparent 18%),
+        radial-gradient(circle at 85% 18%, rgba(36,66,45,.20), transparent 18%),
+        linear-gradient(180deg, #f8f1e7 0%, #eadcc8 100%);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(74,47,34,.08);
+      isolation:isolate;
+    }
+    .visual-card::before{
+      content:""; position:absolute; inset:18px; border-radius:28px;
+      border:1px solid rgba(74,47,34,.08);
+    }
+    .shelf{
+      position:absolute; left:22px; right:22px; bottom:26px; height:22px; border-radius:999px;
+      background:linear-gradient(90deg, rgba(74,47,34,.62), rgba(74,47,34,.82), rgba(74,47,34,.62));
+      box-shadow:0 12px 24px rgba(74,47,34,.18);
+    }
+    .tabletop{
+      position:absolute; left:50%; bottom:72px; transform:translateX(-50%);
+      width:min(440px, 92%); height:180px; border-radius:50% 50% 42% 42%;
+      background:linear-gradient(180deg, #f6e9d3 0%, #dcc29f 100%);
+      box-shadow:inset 0 -18px 30px rgba(74,47,34,.08);
+    }
+    .cup{
+      position:absolute; left:50%; bottom:118px; transform:translateX(-50%);
+      width:165px; height:150px; border-radius:0 0 28px 28px;
+      background:linear-gradient(180deg, #fffaf3 0%, #f0e5d5 100%);
+      box-shadow:0 16px 30px rgba(74,47,34,.16);
+      border:1px solid rgba(74,47,34,.08);
+    }
+    .cup::before{
+      content:""; position:absolute; left:-26px; top:22px; width:54px; height:54px; border-radius:50%;
+      border:14px solid #f3eadc; border-right-color:transparent; border-bottom-color:transparent; transform:rotate(-10deg);
+    }
+    .cup::after{
+      content:""; position:absolute; left:18px; right:18px; top:-16px; height:24px; border-radius:50%;
+      background:linear-gradient(180deg, #7b4b2e 0%, #5a3626 100%);
+      box-shadow:0 10px 18px rgba(90,54,38,.25)
+    }
+    .steam{position:absolute; left:50%; top:82px; transform:translateX(-50%); width:120px; height:160px}
+    .steam span{position:absolute; width:26px; height:88px; border-radius:999px; border:3px solid rgba(184,138,68,.35); border-color:rgba(184,138,68,.46) transparent transparent transparent; filter:blur(.2px)}
+    .steam span:nth-child(1){left:6px; transform:rotate(-10deg)}
+    .steam span:nth-child(2){left:38px; top:8px; transform:rotate(4deg)}
+    .steam span:nth-child(3){left:70px; transform:rotate(12deg)}
+    .bonsai{
+      position:absolute; right:30px; top:46px; width:240px; height:300px;
+      filter:drop-shadow(0 20px 28px rgba(40,28,16,.14));
+    }
+    .bonsai .pot{
+      position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+      width:210px; height:88px; border-radius:24px 24px 34px 34px;
+      background:linear-gradient(180deg, #7a553e 0%, #573728 100%);
+      box-shadow: inset 0 10px 18px rgba(255,255,255,.08);
+    }
+    .bonsai .pot::before{content:""; position:absolute; inset:12px 16px 18px; border-radius:18px; border:1px solid rgba(255,255,255,.1)}
+    .bonsai .trunk{
+      position:absolute; left:50%; bottom:76px; width:24px; height:142px; transform:translateX(-50%);
+      background:linear-gradient(180deg, #5a3a29 0%, #2e2119 100%);
+      border-radius:999px;
+      transform-origin:center bottom;
+      clip-path:path('M 9 0 C 12 22, 2 40, 11 60 C 19 80, 27 92, 17 116 C 12 128, 11 138, 12 142 L 24 142 C 25 132, 24 123, 30 112 C 42 84, 31 70, 28 52 C 24 28, 28 15, 20 0 Z');
+    }
+    .bonsai .branch{position:absolute; height:10px; background:linear-gradient(90deg, #2f231c, #6a4834); border-radius:999px}
+    .bonsai .branch.b1{width:105px; left:54px; top:118px; transform:rotate(-25deg)}
+    .bonsai .branch.b2{width:92px; left:24px; top:150px; transform:rotate(18deg)}
+    .bonsai .branch.b3{width:116px; right:10px; top:164px; transform:rotate(-16deg)}
+    .leaf{position:absolute; width:58px; height:34px; background:linear-gradient(180deg, #4d7b49 0%, #284b31 100%); border-radius:100px 0 100px 0; box-shadow:0 8px 18px rgba(36,66,45,.18)}
+    .leaf.l1{left:16px; top:76px; transform:rotate(-28deg)}
+    .leaf.l2{left:56px; top:48px; transform:rotate(12deg)}
+    .leaf.l3{left:102px; top:30px; transform:rotate(25deg)}
+    .leaf.l4{right:20px; top:74px; transform:rotate(22deg)}
+    .leaf.l5{right:58px; top:42px; transform:rotate(-14deg)}
+    .leaf.l6{right:102px; top:30px; transform:rotate(-25deg)}
+    .accent-ring{
+      position:absolute; inset:auto auto 36px 28px; width:88px; height:88px; border-radius:50%;
+      border:1px solid rgba(36,66,45,.16); background:radial-gradient(circle, rgba(255,255,255,.55) 0 36%, rgba(232,208,160,.18) 37% 100%);
+    }
+    .accent-ring::before,.accent-ring::after{content:""; position:absolute; border-radius:50%; inset:16px; border:1px solid rgba(184,138,68,.25)}
+    .accent-ring::after{inset:30px; background:rgba(36,66,45,.08)}
+    .floating-tag{
+      position:absolute; left:24px; top:24px; display:inline-flex; align-items:center; gap:10px;
+      background:rgba(255,250,243,.82); border:1px solid rgba(74,47,34,.08); border-radius:999px; padding:10px 14px;
+      box-shadow:var(--shadow-soft); color:var(--green); font-weight:700;
+    }
+    .floating-tag .dot{width:10px;height:10px;border-radius:50%; background:var(--gold)}
+    section{padding:26px 0 74px}
+    .section-head{display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:24px; flex-wrap:wrap}
+    .section-head h2{font-family:"Cormorant Garamond", serif; font-size:clamp(2rem, 4vw, 3.3rem); letter-spacing:-.02em}
+    .section-head p{max-width:60ch; color:var(--muted); margin:0}
+    .cards{display:grid; gap:18px}
+    .menu-grid{grid-template-columns:repeat(4, minmax(0, 1fr))}
+    .card{
+      background:linear-gradient(180deg, rgba(255,250,243,.92), rgba(244,234,220,.94));
+      border:1px solid rgba(74,47,34,.08); border-radius:var(--radius-xl); padding:22px; box-shadow:var(--shadow-soft);
+    }
+    .drink-card h3,.story-card h3,.atmosphere-card h3,.hours-card h3{font-size:1.18rem; margin:.8rem 0 .45rem}
+    .drink-card p,.story-card p,.atmosphere-card p,.hours-card p,.quote{color:var(--muted); margin:0}
+    .icon-badge{
+      width:48px; height:48px; border-radius:16px; display:grid; place-items:center;
+      background:linear-gradient(135deg, rgba(36,66,45,.13), rgba(184,138,68,.13)); color:var(--green);
+    }
+    .meta{display:flex; justify-content:space-between; align-items:center; margin-top:14px; color:var(--espresso); font-weight:700}
+    .meta span:last-child{color:var(--gold); font-weight:800}
+    .story-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:stretch}
+    .story-card{padding:28px}
+    .story-card.emphasis{background:linear-gradient(135deg, rgba(36,66,45,.96), rgba(55,92,64,.96)); color:#fff}
+    .story-card.emphasis p,.story-card.emphasis .quote,.story-card.emphasis li{color:rgba(255,255,255,.84)}
+    .story-card.emphasis .icon-badge{background:rgba(255,255,255,.08); color:#f8f0df}
+    .list{margin:18px 0 0; padding:0; list-style:none; display:grid; gap:12px}
+    .list li{display:flex; gap:12px; align-items:flex-start}
+    .check{width:20px; height:20px; flex:none; margin-top:2px; border-radius:50%; background:rgba(232,208,160,.18); color:var(--gold); display:grid; place-items:center; font-size:.8rem; font-weight:800}
+    .atmosphere-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:18px}
+    .gallery{
+      display:grid; grid-template-columns:1fr 1fr; gap:14px;
+    }
+    .photo-tile{
+      min-height:180px; border-radius:22px; position:relative; overflow:hidden;
+      background:linear-gradient(160deg, rgba(36,66,45,.22), rgba(184,138,68,.12)),
+                 linear-gradient(180deg, #f9f2e8 0%, #e2cfb6 100%);
+      border:1px solid rgba(74,47,34,.08);
+    }
+    .photo-tile::before{content:""; position:absolute; inset:18px; border-radius:18px; border:1px dashed rgba(36,66,45,.18)}
+    .photo-tile.t1::after,.photo-tile.t2::after,.photo-tile.t3::after{content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%)}
+    .photo-tile.t1::after{width:92px;height:92px;border-radius:50%; background:radial-gradient(circle at 35% 35%, #f7efe1 0 22%, #8b5a3c 23% 33%, #2f1d14 34% 100%); box-shadow:0 18px 36px rgba(74,47,34,.12)}
+    .photo-tile.t2::after{width:120px;height:84px;border-radius:20px 20px 34px 34px; background:linear-gradient(180deg, #fffaf3 0 55%, #7b4b2e 56% 100%); box-shadow:0 18px 36px rgba(74,47,34,.12)}
+    .photo-tile.t3::after{width:120px;height:120px;border-radius:50%; background:linear-gradient(180deg, rgba(255,250,243,.9), rgba(232,208,160,.3)); box-shadow:inset 0 0 0 10px rgba(36,66,45,.18), inset 0 0 0 24px rgba(184,138,68,.12)}
+    .photo-caption{position:absolute; left:16px; bottom:16px; padding:10px 12px; border-radius:14px; background:rgba(255,250,243,.88); color:var(--green); font-size:.92rem; font-weight:700; box-shadow:var(--shadow-soft)}
+    .hours-layout{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+    .hours-list{display:grid; gap:12px; margin-top:14px}
+    .hours-row{display:flex; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid rgba(74,47,34,.1)}
+    .hours-row:last-child{border-bottom:0}
+    .social-proof{display:grid; grid-template-columns:1.25fr .75fr; gap:18px; align-items:stretch}
+    .quote-card{padding:30px; background:linear-gradient(135deg, rgba(255,250,243,.94), rgba(244,234,220,.96))}
+    blockquote{margin:0; font-family:"Cormorant Garamond", serif; font-size:clamp(1.45rem, 2.7vw, 2.2rem); line-height:1.16; color:var(--espresso)}
+    .quote-footer{margin-top:16px; color:var(--muted); font-weight:600}
+    footer{
+      padding:28px 0 40px;
+      border-top:1px solid rgba(74,47,34,.08);
+      background:rgba(255,250,243,.45)
+    }
+    .footer-grid{display:grid; grid-template-columns:1.2fr .8fr .8fr; gap:18px}
+    .footer-grid h3{font-size:1rem; margin-bottom:10px}
+    .footer-grid a,.footer-grid p{color:var(--muted)}
+    .footer-grid ul{list-style:none; padding:0; margin:0; display:grid; gap:10px}
+    .fineprint{margin-top:20px; padding-top:16px; border-top:1px solid rgba(74,47,34,.08); color:var(--muted); font-size:.92rem; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+    .section-id{scroll-margin-top:100px}
+    @media (max-width: 980px){
+      .hero-grid,.story-grid,.atmosphere-grid,.social-proof,.hours-layout,.footer-grid,.menu-grid{grid-template-columns:1fr}
+      .visual-card{min-height:560px}
+      nav ul{display:none}
+    }
+    @media (max-width: 640px){
+      .nav{min-height:70px}
+      .brand-name{font-size:1.28rem}
+      .hero{padding-top:26px}
+      .hero-grid{min-height:auto; gap:22px}
+      h1{max-width:10ch}
+      .visual-card{padding:18px; border-radius:28px; min-height:460px}
+      .bonsai{right:10px; top:38px; width:210px; height:260px}
+      .steam{top:66px}
+      .cup{width:138px; height:128px}
+      .tabletop{bottom:62px}
+      .section-head{margin-bottom:18px}
+      .gallery{grid-template-columns:1fr}
+      .btn,.nav-cta{width:100%}
+      .hero-actions{display:grid}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home" aria-label="Bonsai Brew home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Bonsai Brew</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <ul>
+          <li><a href="#drinks">Drinks</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#atmosphere">Atmosphere</a></li>
+          <li><a href="#visit">Visit</a></li>
+        </ul>
+      </nav>
+      <a class="nav-cta" href="#visit">Reserve a Seat</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Japanese-inspired café • slow crafted coffee</span>
+          <h1>Calm coffee, shaped with the patience of a bonsai.</h1>
+          <p>At Bonsai Brew, every pour is designed to feel restorative—quiet moments, warm light, and espresso crafted with exacting care. Step into a premium neighborhood café where the ritual is as comforting as the cup.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#drinks">Explore the Menu</a>
+            <a class="btn btn-secondary" href="#story">Why Bonsai Brew</a>
+          </div>
+          <div class="hero-note" aria-label="Highlights">
+            <span><i></i> Single-origin beans</span>
+            <span><i></i> Matcha and pour-over specials</span>
+            <span><i></i> Quiet seating + Wi‑Fi</span>
+          </div>
+        </div>
+
+        <div class="visual-card" aria-label="Decorative bonsai coffee illustration">
+          <div class="floating-tag"><span class="dot"></span> Seasonal roast: Yuzu Mocha</div>
+          <div class="bonsai" aria-hidden="true">
+            <div class="leaf l1"></div><div class="leaf l2"></div><div class="leaf l3"></div>
+            <div class="leaf l4"></div><div class="leaf l5"></div><div class="leaf l6"></div>
+            <div class="branch b1"></div><div class="branch b2"></div><div class="branch b3"></div>
+            <div class="trunk"></div>
+            <div class="pot"></div>
+          </div>
+          <div class="steam" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="tabletop" aria-hidden="true"></div>
+          <div class="cup" aria-hidden="true"></div>
+          <div class="accent-ring" aria-hidden="true"></div>
+          <div class="shelf" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-id" id="drinks">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Featured drinks &amp; offerings</h2>
+          </div>
+          <p>A concise menu of signature drinks and small comforts, balancing café warmth with a refined Japanese sensibility.</p>
+        </div>
+        <div class="cards menu-grid">
+          <article class="card drink-card">
+            <div class="icon-badge" aria-hidden="true">☕</div>
+            <h3>House Espresso</h3>
+            <p>Chocolate, toasted almond, and a soft citrus finish—pulled rich and velvety.</p>
+            <div class="meta"><span>Double shot</span><span>$4.80</span></div>
+          </article>
+          <article class="card drink-card">
+            <div class="icon-badge" aria-hidden="true">🍵</div>
+            <h3>Matcha Cloud</h3>
+            <p>Stone-ground ceremonial matcha, oat milk, and vanilla foam with a silky texture.</p>
+            <div class="meta"><span>Hot or iced</span><span>$6.50</span></div>
+          </article>
+          <article class="card drink-card">
+            <div class="icon-badge" aria-hidden="true">🌿</div>
+            <h3>Bonsai Pour-Over</h3>
+            <p>Light-roasted single origin, brewed to highlight floral notes and bright clarity.</p>
+            <div class="meta"><span>Fresh brewed</span><span>$5.90</span></div>
+          </article>
+          <article class="card drink-card">
+            <div class="icon-badge" aria-hidden="true">🍰</div>
+            <h3>Sesame Financier</h3>
+            <p>Small-batch pastry with brown butter, black sesame, and delicate citrus glaze.</p>
+            <div class="meta"><span>Made daily</span><span>$3.70</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-id" id="story">
+      <div class="container story-grid">
+        <article class="card story-card emphasis">
+          <div class="icon-badge" aria-hidden="true">✦</div>
+          <h3>Our bonsai philosophy</h3>
+          <p>We take inspiration from bonsai cultivation: shaping slowly, trimming only what’s needed, and valuing balance over excess. That approach guides everything from our roast profile to the way sunlight lands on each table.</p>
+          <ul class="list">
+            <li><span class="check">✓</span><span>Thoughtful sourcing and seasonal rotation</span></li>
+            <li><span class="check">✓</span><span>A calm, uncluttered space for conversation or focus</span></li>
+            <li><span class="check">✓</span><span>Warm hospitality with a premium but unpretentious feel</span></li>
+          </ul>
+        </article>
+        <article class="card story-card">
+          <div class="icon-badge" aria-hidden="true">⟡</div>
+          <h3>Brand story</h3>
+          <p>Bonsai Brew began as a neighborhood café built around a simple idea: great coffee should feel grounding. Inspired by Japanese design principles, we pair earthy materials, soft light, and careful presentation to create a place that invites you to slow down.</p>
+          <p style="margin-top:14px">Whether you’re meeting a friend, working through a morning ritual, or pausing between errands, the experience is designed to feel intentional and serene.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-id" id="atmosphere">
+      <div class="container atmosphere-grid">
+        <article class="card atmosphere-card">
+          <div class="section-head" style="margin-bottom:14px; align-items:center">
+            <div>
+              <h2 style="font-size:clamp(1.8rem, 3.4vw, 2.6rem)">Atmosphere</h2>
+            </div>
+            <p>Quiet luxury, warm textures, and a relaxed cadence.</p>
+          </div>
+          <div class="gallery" aria-label="Atmosphere highlights">
+            <div class="photo-tile t1"><div class="photo-caption">Window bench seating</div></div>
+            <div class="photo-tile t2"><div class="photo-caption">Ceremonial tea + espresso</div></div>
+            <div class="photo-tile t3"><div class="photo-caption">Greenery, wood, and light</div></div>
+            <div class="photo-tile"><div class="photo-caption">Quiet corners for focus</div></div>
+          </div>
+        </article>
+        <aside class="card hours-card" id="visit">
+          <h3>Hours &amp; location</h3>
+          <p>Find us in a cozy corner of the arts district, a few steps from the river walk.</p>
+          <div class="hours-list" role="list" aria-label="Opening hours">
+            <div class="hours-row"><span>Mon–Thu</span><strong>7:00 AM – 6:00 PM</strong></div>
+            <div class="hours-row"><span>Fri–Sat</span><strong>7:00 AM – 8:00 PM</strong></div>
+            <div class="hours-row"><span>Sunday</span><strong>8:00 AM – 5:00 PM</strong></div>
+          </div>
+          <div class="card" style="margin-top:16px; background:linear-gradient(135deg, rgba(36,66,45,.95), rgba(53,88,62,.95)); color:#fff; box-shadow:none">
+            <h3 style="margin-top:0; color:#fff">Bonsai Brew Café</h3>
+            <p style="color:rgba(255,255,255,.84)">12 Kiyomi Lane<br>Maple District, Portland, OR</p>
+            <p style="margin-top:10px; color:rgba(255,255,255,.84)">hello@bonsaibrew.cafe<br>(503) 555-0182</p>
+            <a class="btn btn-primary" href="mailto:hello@bonsaibrew.cafe" style="margin-top:16px; display:inline-flex">Contact Us</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section-id" id="testimonials">
+      <div class="container social-proof">
+        <div class="card quote-card">
+          <div class="icon-badge" aria-hidden="true">★</div>
+          <blockquote>“Bonsai Brew feels like a quiet reset button—beautiful design, exceptional coffee, and a calmness you can taste in every sip.”</blockquote>
+          <div class="quote-footer">— Elena R., local designer and regular guest</div>
+        </div>
+        <div class="card" style="padding:28px">
+          <h3>Why guests return</h3>
+          <p class="quote">A polished space for solo mornings, thoughtful meetings, and unhurried afternoons.</p>
+          <ul class="list" style="margin-top:18px">
+            <li><span class="check">✓</span><span>4.9/5 average review from neighborhood guests</span></li>
+            <li><span class="check">✓</span><span>Seasonal drinks inspired by Japanese flavors</span></li>
+            <li><span class="check">✓</span><span>Bar seating, lounge corners, and table service</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:10px"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Bonsai Brew</span></div>
+        <p>Premium coffee and a serene café experience inspired by bonsai balance and Japanese warmth.</p>
+      </div>
+      <div>
+        <h3>Links</h3>
+        <ul>
+          <li><a href="#drinks">Menu</a></li>
+          <li><a href="#story">Story</a></li>
+          <li><a href="#atmosphere">Atmosphere</a></li>
+          <li><a href="#visit">Visit</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <ul>
+          <li><a href="mailto:hello@bonsaibrew.cafe">hello@bonsaibrew.cafe</a></li>
+          <li><a href="tel:+15035550182">(503) 555-0182</a></li>
+          <li><a href="#visit">12 Kiyomi Lane, Portland, OR</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container fineprint">
+      <span>© 2026 Bonsai Brew. Fictional brand concept.</span>
+      <span>Designed with calm, warmth, and care.</span>
+    </div>
+  </footer>
+</body>
+</html>
